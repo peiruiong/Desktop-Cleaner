@@ -5,7 +5,7 @@ import shutil;
 def clean_desktop():
     print("Script started")
     #Set path to desktop
-    desktop_path= os.path.join(os.path.expanduser("~"),"Desktop")
+    desktop_path= os.path.join(os.path.expanduser("~"),"OneDrive\\Desktop")
 
     #Set path to folder storing garbage
     cleaned_folder_path=os.path.join(desktop_path,"Desktop Files")
@@ -17,7 +17,6 @@ def clean_desktop():
 
     #Get a list of files on desktop, check whether it is file or folder
     desktop_files= [f for f in os.listdir(desktop_path) if os.path.isfile(desktop_path+'/'+f)]
-    print("Script started")
     for file_name in desktop_files:
         file_path = os.path.join(desktop_path,file_name)
 
@@ -26,12 +25,17 @@ def clean_desktop():
 
         #Only clean those created <7 days
         if(current_date - created_date).days<7:
+            # Create a folder named by current DateTime under "Desktop Files" folder
+            # Format the date and time as a string
+            datetime_folder_name = current_date.strftime("%Y-%m-%d_%H-%M-%S")
+            datetime_folder_path = os.path.join(cleaned_folder_path,datetime_folder_name)
+            os.makedirs(datetime_folder_path,exist_ok=True)
             # "_," to ignore filename, file_extension to store filetype
             _, file_extension = os.path.splitext(file_name)
             # take file_extension from position 1 (ignore ".")
             file_extension = file_extension[1:].lower()  
 
-            file_type_folder = os.path.join(cleaned_folder_path, file_extension)
+            file_type_folder = os.path.join(datetime_folder_path, file_extension)
             os.makedirs(file_type_folder, exist_ok=True)
 
             shutil.move(file_path, os.path.join(file_type_folder, file_name))
